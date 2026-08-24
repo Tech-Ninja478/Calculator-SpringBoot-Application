@@ -1,6 +1,11 @@
 pipeline{
     agent any
 
+    options{
+        timestamps()
+        disableConcurrentBuilds()
+    }
+
     stages{
         stage('Checkout'){
             steps{
@@ -17,6 +22,12 @@ pipeline{
         stage('Build Docker Image'){
             steps{
                 sh 'docker build -t calculator-api:${BUILD_NUMBER} .'
+            }
+        }
+
+        stage('Verify Docker Image'){
+            steps{
+                sh 'docker image inspect calculator-api:${BUILD_NUMBER}'
             }
         }
 
@@ -39,6 +50,20 @@ pipeline{
                     }
                 }
             }
+        }
+    }
+
+    post{
+        success{
+            echo 'Pipeline completed successfully!'
+        }
+
+        failure{
+            echo 'Pipeline failed. Check the console output.'
+        }
+
+        always{
+            echo 'Pipeline execution completed.'
         }
     }
 }
