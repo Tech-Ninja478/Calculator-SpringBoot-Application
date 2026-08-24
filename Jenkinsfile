@@ -21,7 +21,12 @@ pipeline{
 
         stage('Build Docker Image'){
             steps{
-                sh 'docker build -t calculator-api:${BUILD_NUMBER} .'
+                sh '''
+                    docker build \
+                    --build-arg BUILD_NUMBER="${BUILD_NUMBER}" \
+                    --build-arg GIT_COMMIT="${GIT_COMMIT}" \
+                    -t calculator-api:${BUILD_NUMBER} .
+                '''
             }
         }
 

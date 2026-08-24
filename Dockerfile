@@ -17,6 +17,13 @@ RUN ./mvnw clean package -DskipTests
 # -------------------- STAGE 2: RUNTIME --------------------
 FROM eclipse-temurin:21-jre-alpine
 
+ARG BUILD_NUMBER=unknown
+ARG GIT_COMMIT=unknown
+
+LABEL org.opencontainers.image.title="Calculator API"
+LABEL org.opencontainers.image.version="${BUILD_NUMBER}"
+LABEL org.opencontainers.image.revision="${GIT_COMMIT}"
+
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
