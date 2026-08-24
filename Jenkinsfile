@@ -19,5 +19,26 @@ pipeline{
                 sh 'docker build -t calculator-api:${BUILD_NUMBER} .'
             }
         }
+
+        stage('Push Docker Image'){
+            steps{
+                script{
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'dockerhub-task6',
+                            usernameVariable: 'DOCKER_USERNAME',
+                            passwordVariable: 'DOCKER_PASSWORD'
+                        )
+                    ]){
+                        sh '''
+                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                            docker tag calculator-api:${BUILD_NUMBER} ${DOCKER_USERNAME}/calculator-api:${BUILD_NUMBER}
+                            docker push ${DOCKER_USERNAME}/calculator-api:${BUILD_NUMBER}
+                            docker logout
+                        '''
+                    }
+                }
+            }
+        }
     }
 }
