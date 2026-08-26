@@ -59,10 +59,7 @@ pipeline{
     }
 
     post{
-        success{
-            archiveArtifacts artifacts: 'target/*.jar',
-                fingerprint: true
-            
+        success{            
             echo 'Pipeline completed successfully!'
         }
 
